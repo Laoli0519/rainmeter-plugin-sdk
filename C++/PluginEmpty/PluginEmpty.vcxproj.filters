@@ -4,6 +4,6 @@
     <ResourceCompile Include="PluginEmpty.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="PluginEmpty.cpp" />
+    <ClCompile Include="LoadingLocalIP.cpp" />
   </ItemGroup>
 </Project>
