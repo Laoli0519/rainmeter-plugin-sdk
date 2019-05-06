@@ -63,6 +63,26 @@ mLAN是一个对象，NetAdaName和IPType是对象中的变量，程序每调用一次LoadingLocalIP.d
  */
 
 
+//#ifndef _DEBUG
+
+ // default lib setting.
+//#pragma comment(linker, "/defaultlib:kernel32.lib") 
+//#pragma comment(linker, "/defaultlib:LIBCTINY.LIB")
+//#pragma comment(linker, "/nodefaultlib:libc.lib")
+//#pragma comment(linker, "/nodefaultlib:libcmt.lib")
+
+//// section size
+//#pragma comment(linker, "/FILEALIGN:16")
+//#pragma comment(linker, "/ALIGN:16") 
+//#pragma comment(linker, "/OPT:NOWIN98")
+//
+//// 合并段
+//#pragma comment(linker, "/MERGE:.rdata=.data")
+//#pragma comment(linker, "/MERGE:.text=.data")
+//#pragma comment(linker, "/MERGE:.reloc=.data")
+
+//#endif
+
 enum IPType
 {
 	IP_UNKNOWN,
@@ -162,7 +182,7 @@ PLUGIN_EXPORT void Initialize(void** data, void* rm)
 	measure->IPFile->clear();
 	//measure->IPAddress = new std::string();
 	//measure->IPAddress->clear();
-	RmLogF(rm, LOG_NOTICE, L"In Initialize.");
+	RmLogF(rm, LOG_DEBUG, L"In Initialize.");
 }
 
 PLUGIN_EXPORT void Reload(void* data, void* rm, double* maxValue)
@@ -178,16 +198,16 @@ PLUGIN_EXPORT void Reload(void* data, void* rm, double* maxValue)
 	
 	LPCWSTR NetworkAda = RmReadString(rm, L"NetAdaName", L"");
 	//std::wstring NetworkAdapter = NetworkAda;
-	//RmLogF(rm, LOG_NOTICE, L"In Reload NetworkAdapter = %s.", NetworkAdapter.c_str());
+	//RmLogF(rm, LOG_DEBUG, L"In Reload NetworkAdapter = %s.", NetworkAdapter.c_str());
 
 	measure->IPFile->append(NetworkAda);
-	RmLogF(rm, LOG_NOTICE, L"In Reload IPFILE = %s.", measure->IPFile->c_str());
+	RmLogF(rm, LOG_DEBUG, L"In Reload IPFILE = %s.", measure->IPFile->c_str());
 	//LPCWSTR value = RmReadString(rm, L"IPType", L"");
 
 	measure->prm = rm;
 
 
-	RmLogF(measure->prm, LOG_NOTICE, L"In Updateeeeeeeeee");
+	//RmLogF(measure->prm, LOG_DEBUG, L"In Updateeeeeeeeee");
 
 	//PIP_ADAPTER_INFO结构体指针存储本机网卡信息
 	PIP_ADAPTER_INFO pIpAdapterInfo = new IP_ADAPTER_INFO();
@@ -200,7 +220,7 @@ PLUGIN_EXPORT void Reload(void* data, void* rm, double* maxValue)
 	//记录每张网卡上的IP地址数量
 	//int IPnumPerNetCard = 0;
 
-	RmLogF(measure->prm, LOG_NOTICE, L"In Update after new IP_ADAPTER_INFO, nRel");
+	//RmLogF(measure->prm, LOG_DEBUG, L"In Update after new IP_ADAPTER_INFO, nRel");
 	if (ERROR_BUFFER_OVERFLOW == nRel)
 	{
 		//如果函数返回的是ERROR_BUFFER_OVERFLOW
@@ -215,17 +235,17 @@ PLUGIN_EXPORT void Reload(void* data, void* rm, double* maxValue)
 	}
 	if (ERROR_SUCCESS == nRel)
 	{
-		RmLogF(measure->prm, LOG_NOTICE, L"In Update GetAdaptersInfo success.");
+		RmLogF(measure->prm, LOG_DEBUG, L"In Update GetAdaptersInfo success.");
 		while (pIpAdapterInfo) {
 
 			CString str = CString(pIpAdapterInfo->Description);
 			USES_CONVERSION;
 			LPCWSTR wszClassName = A2CW(W2A(str));
 
-			RmLogF(rm, LOG_NOTICE, L"In while (pIpAdapterInfo) { IPFILE = %s.", measure->IPFile->c_str());
-			RmLogF(measure->prm, LOG_NOTICE, L"In while (pIpAdapterInfo) { wszClassName = %s", wszClassName);
+			RmLogF(rm, LOG_DEBUG, L"In while (pIpAdapterInfo) { IPFILE = %s.", measure->IPFile->c_str());
+			RmLogF(measure->prm, LOG_DEBUG, L"In while (pIpAdapterInfo) { wszClassName = %s", wszClassName);
 			if (strcmp((LPCSTR)measure->IPFile->c_str(), (LPCSTR)wszClassName) == 0) {
-				RmLogF(measure->prm, LOG_NOTICE, L"In if(){} %s == %s", wszClassName, measure->IPFile->c_str());
+				RmLogF(measure->prm, LOG_DEBUG, L"In if(){} %s == %s", wszClassName, measure->IPFile->c_str());
 			//if (_wcsicmp(wszClassName, measure->IPFile) == 0) {
 				IP_ADDR_STRING *pIpAddrString = &(pIpAdapterInfo->IpAddressList);
 	//			//do
@@ -240,8 +260,8 @@ PLUGIN_EXPORT void Reload(void* data, void* rm, double* maxValue)
 
 				CString str(pIpAddrString->IpAddress.String);
 				measure->IPAddress = str;
-				//RmLogF(measure->prm, LOG_NOTICE, L"In update IPAddress = %s", measure->IPAddress->c_str());
-				RmLogF(measure->prm, LOG_NOTICE, L"In update IPAddress = %s", measure->IPAddress);
+				//RmLogF(measure->prm, LOG_DEBUG, L"In update IPAddress = %s", measure->IPAddress->c_str());
+				RmLogF(measure->prm, LOG_DEBUG, L"In update IPAddress = %s", measure->IPAddress);
 				//str.ReleaseBuffer();
 				//break;
 			}
@@ -250,7 +270,7 @@ PLUGIN_EXPORT void Reload(void* data, void* rm, double* maxValue)
 		}
 	}
 	else {
-		RmLogF(measure->prm, LOG_NOTICE, L"In update, nRel == NO_ERROR");
+		RmLogF(measure->prm, LOG_DEBUG, L"In update, nRel == NO_ERROR");
 	}
 	delete pIpAdapterInfo;
 
@@ -278,9 +298,9 @@ PLUGIN_EXPORT LPCWSTR GetString(void* data)
 	// do any processing in the Update function. See the comments above.
 	//if (!measure->IPAddress.empty())
 	//{
-	//RmLogF(measure->prm, LOG_NOTICE, L"In GetString IPAddress = %s", measure->IPAddress->c_str());
+	//RmLogF(measure->prm, LOG_DEBUG, L"In GetString IPAddress = %s", measure->IPAddress->c_str());
 	//CString str(measure->IPAddress->c_str());
-	RmLogF(measure->prm, LOG_NOTICE, L"In GetString IPAddress = %s", measure->IPAddress);
+	//RmLogF(measure->prm, LOG_DEBUG, L"In GetString IPAddress = %s", measure->IPAddress);
 	USES_CONVERSION;
 	return A2CW(W2A(measure->IPAddress));
 	//}

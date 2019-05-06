@@ -1,0 +1,23 @@
+#http分块编码
+响应报文中带有字样：Transfer-Encoding: chunked 
+
+#http编码格式：gzip, deflate (都是需要解码的)
+
+
+#cmake 构建时制定编译器架构(x86 or x64)
+
+	vs2015 x64编译器为例，cmake命令如下：
+		cmake -G "Visual Studio 14 Win64"
+		
+	x32命令如下：
+		cmake -G "Visual Studio 14"
+		
+	另外一种等价方式，用命令行参数-A来指定架构（x64或者ARM）：
+		cmake -A x64(x32)
+
+	windows下如果用了cmake -G"Visual Studio 14"命令，则cmake会给你生成Visual Studio工程文件相关的文件，比如：Project.sln，这时要编译生成必须用msbuild命令，比如：
+		msbuild Project.sln  
+	
+	完整步骤是：
+		cmake -G "Visual Studio 14 Win64" path\to\source\dir  
+		msbuild Project.sln  

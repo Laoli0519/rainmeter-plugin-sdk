@@ -6,4 +6,7 @@
   <ItemGroup>
     <ClCompile Include="PluginParentChild.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GetWeather.hpp" />
+  </ItemGroup>
 </Project>
